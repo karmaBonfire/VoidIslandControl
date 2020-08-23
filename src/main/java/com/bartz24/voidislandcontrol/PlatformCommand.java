@@ -342,7 +342,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
             return;
         }
 
-        isPos.removeNewTrsutedPlayer(player2.getGameProfile().getId());
+        isPos.removeTrsutedPlayer(player2.getGameProfile().getId());
 
     }
 
