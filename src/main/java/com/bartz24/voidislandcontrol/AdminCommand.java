@@ -29,6 +29,7 @@ public class AdminCommand extends CommandBase implements ICommand {
     public AdminCommand() {
         aliases = new ArrayList<String>();
         aliases.add("islandAdmin");
+        aliases.add("caveAdmin");
 
     }
 
