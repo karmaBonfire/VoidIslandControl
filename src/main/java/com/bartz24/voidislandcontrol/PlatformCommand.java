@@ -292,7 +292,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
             return;
         }
 
-        if (!isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+        if (isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
             player.sendMessage(new TextComponentString("Player is on your island already."));
             return;
         }
@@ -332,7 +332,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
             return;
         }
 
-        if (!isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+        if (isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
             player.sendMessage(new TextComponentString("Player is on your island already."));
             return;
         }
