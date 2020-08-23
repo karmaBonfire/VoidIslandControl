@@ -35,6 +35,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
         aliases = new ArrayList<String>();
         if (ConfigOptions.commandSettings.commandName.equals("island")) {
             aliases.add("island");
+            aliases.add("cave");
         } else
             aliases.add(ConfigOptions.commandSettings.commandName);
 
@@ -59,7 +60,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
                                           @Nullable BlockPos targetPos) {
         if (args.length == 1) {
             return getListOfStringsMatchingLastWord(args, "create", "invite", "join", "leave", "kick", "home", "spawn",
-                    "reset", "visit", "onechunk");
+                    "reset", "visit", "onechunk", "trust", "untrust");
         } else {
             String subCommand = args[0];
             subCommand = subCommand.trim();
@@ -77,6 +78,12 @@ public class PlatformCommand extends CommandBase implements ICommand {
                 return args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames())
                         : Collections.<String>emptyList();
             } else if (subCommand.equals("kick")) {
+                return args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames())
+                        : Collections.<String>emptyList();
+            } else if (subCommand.equals("trust")) {
+                return args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames())
+                        : Collections.<String>emptyList();
+            } else if (subCommand.equals("untrust")) {
                 return args.length == 2 ? getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames())
                         : Collections.<String>emptyList();
             }
@@ -157,6 +164,10 @@ public class PlatformCommand extends CommandBase implements ICommand {
 
                 IslandManager.worldOneChunk = true;
                 reset(player, args, world);
+            } else if (subCommand.equals("trust")) {
+                trust(player, args);
+            } else if (subCommand.equals("untrust")) {
+                untrust(player, args);
             }
         }
 
@@ -198,7 +209,9 @@ public class PlatformCommand extends CommandBase implements ICommand {
                 ConfigOptions.islandSettings.islandYLevel, isPos.getY() * ConfigOptions.islandSettings.islandDistance);
 
         IslandManager.setVisitLoc(player, isPos.getX(), isPos.getY());
-        player.setGameType(GameType.SPECTATOR);
+        if(!isPos.getTrsutedPlayerUUIDs().contains(player.getGameProfile().getId())){
+            player.setGameType(GameType.SPECTATOR);
+        }
 
         player.connection.setPlayerLocation(visitPos.getX() + 0.5, visitPos.getY(), visitPos.getZ() + 0.5,
                 player.rotationYaw, player.rotationPitch);
@@ -250,6 +263,86 @@ public class PlatformCommand extends CommandBase implements ICommand {
         }
         EventHandler.spawnPlayer(player2, new BlockPos(0, ConfigOptions.islandSettings.islandYLevel, 0), false);
         player2.sendMessage(new TextComponentString("You have been kicked..."));
+
+    }
+
+
+
+    public static void trust(EntityPlayerMP player, String[] args) throws CommandException {
+        if (args.length != 2) {
+            player.sendMessage(new TextComponentString("Must have 1 argument."));
+            return;
+        }
+        if (IslandManager.worldOneChunk) {
+            player.sendMessage(new TextComponentString("Can't use this command in this mode."));
+            return;
+        }
+
+        EntityPlayerMP player2 = (EntityPlayerMP) player.getEntityWorld().getPlayerEntityByName(args[1]);
+
+        IslandPos isPos = IslandManager.getPlayerIsland(player.getGameProfile().getId());
+
+        if (args[1].equals(player.getName())) {
+            player.sendMessage(new TextComponentString("Why are you trusting yourself."));
+            return;
+        }
+
+        if (isPos == null) {
+            player.sendMessage(new TextComponentString("You doesn't exist or you doesn't have an island."));
+            return;
+        }
+
+        if (!isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+            player.sendMessage(new TextComponentString("Player is on your island already."));
+            return;
+        }
+
+        if (isPos.getTrsutedPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+            player.sendMessage(new TextComponentString("They are already trusted"));
+            return;
+        }
+
+        isPos.addNewTrsutedPlayer(player2.getGameProfile().getId());
+
+    }
+
+
+
+    public static void untrust(EntityPlayerMP player, String[] args) throws CommandException {
+        if (args.length != 2) {
+            player.sendMessage(new TextComponentString("Must have 1 argument."));
+            return;
+        }
+        if (IslandManager.worldOneChunk) {
+            player.sendMessage(new TextComponentString("Can't use this command in this mode."));
+            return;
+        }
+
+        EntityPlayerMP player2 = (EntityPlayerMP) player.getEntityWorld().getPlayerEntityByName(args[1]);
+
+        IslandPos isPos = IslandManager.getPlayerIsland(player.getGameProfile().getId());
+
+        if (args[1].equals(player.getName())) {
+            player.sendMessage(new TextComponentString("Why are you trusting yourself."));
+            return;
+        }
+
+        if (isPos == null) {
+            player.sendMessage(new TextComponentString("You doesn't exist or you doesn't have an island."));
+            return;
+        }
+
+        if (!isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+            player.sendMessage(new TextComponentString("Player is on your island already."));
+            return;
+        }
+
+        if (!isPos.getTrsutedPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+            player.sendMessage(new TextComponentString("They are not trusted"));
+            return;
+        }
+
+        isPos.removeNewTrsutedPlayer(player2.getGameProfile().getId());
 
     }
 
@@ -306,6 +399,12 @@ public class PlatformCommand extends CommandBase implements ICommand {
 
         player.sendMessage(new TextComponentString(TextFormatting.RED + "invite <player>" + TextFormatting.WHITE
                 + " : Ask another player join your island team. Player must do join to go to your island team."));
+
+                player.sendMessage(new TextComponentString(TextFormatting.RED + "trust <player>" + TextFormatting.WHITE
+                        + " : Allow another player to build on your island without them leaving their team."));
+
+                player.sendMessage(new TextComponentString(TextFormatting.RED + "untrust <player>" + TextFormatting.WHITE
+                        + " : Removes trust of a player."));
 
         player.sendMessage(new TextComponentString(TextFormatting.RED + "join" + TextFormatting.WHITE
                 + " : Use this to join an island whose team has invited you recently"));

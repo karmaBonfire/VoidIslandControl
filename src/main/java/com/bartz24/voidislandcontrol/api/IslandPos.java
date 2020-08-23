@@ -16,6 +16,7 @@ public class IslandPos {
 	private String type;
 
 	private ArrayList<String> playerUUIDs;
+	private ArrayList<String> trsutedPlayerUUIDs;
 
 	public IslandPos(int x, int y, UUID... ids) {
 		posX = x;
@@ -25,6 +26,7 @@ public class IslandPos {
 		for (UUID id : ids) {
 			playerUUIDs.add(id.toString());
 		}
+		trsutedPlayerUUIDs=new ArrayList<String>();
 
 	}
 
@@ -37,6 +39,7 @@ public class IslandPos {
 		for (UUID id : ids) {
 			playerUUIDs.add(id.toString());
 		}
+		trsutedPlayerUUIDs=new ArrayList<String>();
 
 	}
 
@@ -48,6 +51,16 @@ public class IslandPos {
 	public void removePlayer(UUID playerUUID) {
 		if (playerUUIDs.contains(playerUUID.toString()))
 			playerUUIDs.remove(playerUUID.toString());
+	}
+
+	public void addNewTrsutedPlayer(UUID playerUUID) {
+		if (!trsutedPlayerUUIDs.contains(playerUUID.toString()))
+		trsutedPlayerUUIDs.add(playerUUID.toString());
+	}
+
+	public void removeTrsutedPlayer(UUID playerUUID) {
+		if (trsutedPlayerUUIDs.contains(playerUUID.toString()))
+			trsutedPlayerUUIDs.remove(playerUUID.toString());
 	}
 
 	public int getX() {
@@ -66,6 +79,10 @@ public class IslandPos {
 		return playerUUIDs;
 	}
 
+	public ArrayList<String> getTrsutedPlayerUUIDs() {
+		return trsutedPlayerUUIDs;
+	}
+
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setInteger("posX", posX);
 		nbt.setInteger("posY", posY);
@@ -81,6 +98,15 @@ public class IslandPos {
 			list.appendTag(stackTag);
 		}
 		nbt.setTag("UUIDs", list);
+		list = new NBTTagList();
+		for (int i = 0; i < trsutedPlayerUUIDs.size(); i++) {
+			NBTTagCompound stackTag = new NBTTagCompound();
+
+			stackTag.setString("playerUUID", trsutedPlayerUUIDs.get(i));
+
+			list.appendTag(stackTag);
+		}
+		nbt.setTag("TrustedUUIDs", list);
 	}
 
 	public void readFromNBT(NBTTagCompound nbt) {
@@ -96,6 +122,14 @@ public class IslandPos {
 
 			String name = stackTag.getString("playerUUID");
 			playerUUIDs.add(name);
+		}
+
+		list = nbt.getTagList("TrustedUUIDs", Constants.NBT.TAG_COMPOUND);
+		for (int i = 0; i < list.tagCount(); ++i) {
+			NBTTagCompound stackTag = list.getCompoundTagAt(i);
+
+			String name = stackTag.getString("playerUUID");
+			trsutedPlayerUUIDs.add(name);
 		}
 	}
 }
