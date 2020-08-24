@@ -26,7 +26,8 @@ public class IslandPos {
 		for (UUID id : ids) {
 			playerUUIDs.add(id.toString());
 		}
-		trsutedPlayerUUIDs=new ArrayList<String>();
+		if (trsutedPlayerUUIDs == null)
+			trsutedPlayerUUIDs=new ArrayList<String>();
 
 	}
 
@@ -39,7 +40,8 @@ public class IslandPos {
 		for (UUID id : ids) {
 			playerUUIDs.add(id.toString());
 		}
-		trsutedPlayerUUIDs=new ArrayList<String>();
+		if (trsutedPlayerUUIDs == null)
+			trsutedPlayerUUIDs=new ArrayList<String>();
 
 	}
 
@@ -55,7 +57,7 @@ public class IslandPos {
 
 	public void addNewTrsutedPlayer(UUID playerUUID) {
 		if (!trsutedPlayerUUIDs.contains(playerUUID.toString()))
-		trsutedPlayerUUIDs.add(playerUUID.toString());
+			trsutedPlayerUUIDs.add(playerUUID.toString());
 	}
 
 	public void removeTrsutedPlayer(UUID playerUUID) {

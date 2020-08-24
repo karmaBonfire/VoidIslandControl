@@ -34,8 +34,8 @@ public class PlatformCommand extends CommandBase implements ICommand {
     public PlatformCommand() {
         aliases = new ArrayList<String>();
         if (ConfigOptions.commandSettings.commandName.equals("island")) {
-            aliases.add("island");
             aliases.add("cave");
+            aliases.add("island");
         } else
             aliases.add(ConfigOptions.commandSettings.commandName);
 
@@ -211,6 +211,8 @@ public class PlatformCommand extends CommandBase implements ICommand {
         IslandManager.setVisitLoc(player, isPos.getX(), isPos.getY());
         if(!isPos.getTrsutedPlayerUUIDs().contains(player.getGameProfile().getId())){
             player.setGameType(GameType.SPECTATOR);
+        } else {
+            IslandManager.setVisitLoc(player, isPos.getX(), isPos.getY(),true);
         }
 
         player.connection.setPlayerLocation(visitPos.getX() + 0.5, visitPos.getY(), visitPos.getZ() + 0.5,
@@ -303,6 +305,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
         }
 
         isPos.addNewTrsutedPlayer(player2.getGameProfile().getId());
+        player.sendMessage(new TextComponentString("Trusted "+args[1]+" "+player2.getGameProfile().getId()));
 
     }
 
@@ -343,6 +346,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
         }
 
         isPos.removeTrsutedPlayer(player2.getGameProfile().getId());
+        player.sendMessage(new TextComponentString("Untrusted "+args[1]));
 
     }
 

@@ -208,35 +208,51 @@ public class IslandManager {
         player.setSpawnPoint(pos, true);
     }
 
+    public static void setVisitLoc(EntityPlayer player, IslandPos island) {
+        setVisitLoc(player,island.getX(),island.getY(),island.getTrsutedPlayerUUIDs().contains(player.getGameProfile().getId()));
+    }
+
     public static void setVisitLoc(EntityPlayer player, int x, int y) {
-        NBTTagCompound persist = setPlayerData(player);
+        setJoinLoc(player, x, y, false);
+    }
+
+    public static void setVisitLoc(EntityPlayer player, int x, int y, boolean trusted) {
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.setInteger("VICVisitX", x);
         persist.setInteger("VICVisitY", y);
+        if (trusted)
+            persist.setInteger("VICVisitTrusted", true);
     }
 
     public static void removeVisitLoc(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.removeTag("VICVisitX");
         persist.removeTag("VICVisitY");
+        persist.removeTag("VICVisitTrusted");
     }
 
     public static boolean hasVisitLoc(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return persist.hasKey("VICVisitX") && persist.hasKey("VICVisitY");
     }
 
     public static IslandPos getVisitLoc(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return hasVisitLoc(player) ? new IslandPos(persist.getInteger("VICVisitX"), persist.getInteger("VICVisitY"))
                 : null;
     }
 
+    public static boolean isTrustedVisit(EntityPlayer player) {
+        NBTTagCompound persist = getPlayerData(player);
+        return persist.hasKey("VICVisitTrusted");
+    }
+
     public static void setJoinLoc(EntityPlayer player, int x, int y) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.setInteger("VICJoinX", x);
         persist.setInteger("VICJoinY", y);
@@ -244,13 +260,13 @@ public class IslandManager {
     }
 
     public static void setLeaveConfirm(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.setInteger("VICLeaveTime", 400);
     }
 
     public static void removeJoinLoc(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.removeTag("VICJoinX");
         persist.removeTag("VICJoinY");
@@ -258,55 +274,55 @@ public class IslandManager {
     }
 
     public static void removeLeaveConfirm(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.removeTag("VICLeaveTime");
     }
 
     public static boolean hasJoinLoc(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return persist.hasKey("VICJoinX") && persist.hasKey("VICJoinY");
     }
 
     public static boolean hasLeaveConfirm(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return persist.hasKey("VICLeaveTime");
     }
 
     public static IslandPos getJoinLoc(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return hasJoinLoc(player) ? new IslandPos(persist.getInteger("VICJoinX"), persist.getInteger("VICJoinY"))
                 : null;
     }
 
     public static int getJoinTime(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return hasJoinLoc(player) ? persist.getInteger("VICJoinTime") : -1;
     }
 
     public static int getLeaveTime(EntityPlayer player) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         return hasLeaveConfirm(player) ? persist.getInteger("VICLeaveTime") : -1;
     }
 
     public static void setJoinTime(EntityPlayer player, int val) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.setInteger("VICJoinTime", val);
     }
 
     public static void setLeaveTime(EntityPlayer player, int val) {
-        NBTTagCompound persist = setPlayerData(player);
+        NBTTagCompound persist = getPlayerData(player);
 
         persist.setInteger("VICLeaveTime", val);
     }
 
-    public static NBTTagCompound setPlayerData(EntityPlayer player) {
+    public static NBTTagCompound getPlayerData(EntityPlayer player) {
         NBTTagCompound data = player.getEntityData();
         if (!data.hasKey(EntityPlayer.PERSISTED_NBT_TAG))
             data.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
