@@ -209,7 +209,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
                 ConfigOptions.islandSettings.islandYLevel, isPos.getY() * ConfigOptions.islandSettings.islandDistance);
 
         IslandManager.setVisitLoc(player, isPos.getX(), isPos.getY());
-        if(!isPos.getTrsutedPlayerUUIDs().contains(player.getGameProfile().getId())){
+        if(!isPos.getTrsutedPlayerUUIDs().contains(player.getGameProfile().getId().toString())){
             player.setGameType(GameType.SPECTATOR);
         } else {
             IslandManager.setVisitLoc(player, isPos.getX(), isPos.getY(),true);
@@ -294,12 +294,12 @@ public class PlatformCommand extends CommandBase implements ICommand {
             return;
         }
 
-        if (isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+        if (isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId().toString())) {
             player.sendMessage(new TextComponentString("Player is on your island already."));
             return;
         }
 
-        if (isPos.getTrsutedPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+        if (isPos.getTrsutedPlayerUUIDs().contains(player2.getGameProfile().getId().toString())) {
             player.sendMessage(new TextComponentString("They are already trusted"));
             return;
         }
@@ -335,12 +335,12 @@ public class PlatformCommand extends CommandBase implements ICommand {
             return;
         }
 
-        if (isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+        if (isPos.getPlayerUUIDs().contains(player2.getGameProfile().getId().toString())) {
             player.sendMessage(new TextComponentString("Player is on your island already."));
             return;
         }
 
-        if (!isPos.getTrsutedPlayerUUIDs().contains(player2.getGameProfile().getId())) {
+        if (!isPos.getTrsutedPlayerUUIDs().contains(player2.getGameProfile().getId().toString())) {
             player.sendMessage(new TextComponentString("They are not trusted"));
             return;
         }

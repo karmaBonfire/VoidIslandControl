@@ -122,8 +122,9 @@ public class EventHandler {
                     && IslandManager.hasVisitLoc(player) && player.dimension == ConfigOptions.worldGenSettings.baseDimension && !player.isCreative()) {
                 if (player instanceof EntityPlayerMP
                         && ((EntityPlayerMP) player).interactionManager.getGameType() != GameType.SPECTATOR
-                        && !IslandManager.isTrustedVisit(player))
+                        && !IslandManager.isTrustedVisit(player)){
                     player.setGameType(GameType.SPECTATOR);
+                }
                 int posX = IslandManager.getVisitLoc(player).getX() * ConfigOptions.islandSettings.islandDistance;
                 int posY = IslandManager.getVisitLoc(player).getY() * ConfigOptions.islandSettings.islandDistance;
                 if (ConfigOptions.islandSettings.islandProtection && (

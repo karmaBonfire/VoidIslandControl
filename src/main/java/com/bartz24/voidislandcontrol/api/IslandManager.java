@@ -208,12 +208,8 @@ public class IslandManager {
         player.setSpawnPoint(pos, true);
     }
 
-    public static void setVisitLoc(EntityPlayer player, IslandPos island) {
-        setVisitLoc(player,island.getX(),island.getY(),island.getTrsutedPlayerUUIDs().contains(player.getGameProfile().getId()));
-    }
-
     public static void setVisitLoc(EntityPlayer player, int x, int y) {
-        setJoinLoc(player, x, y, false);
+        setVisitLoc(player, x, y, false);
     }
 
     public static void setVisitLoc(EntityPlayer player, int x, int y, boolean trusted) {
@@ -222,7 +218,7 @@ public class IslandManager {
         persist.setInteger("VICVisitX", x);
         persist.setInteger("VICVisitY", y);
         if (trusted)
-            persist.setInteger("VICVisitTrusted", true);
+            persist.setBoolean("VICVisitTrusted", true);
     }
 
     public static void removeVisitLoc(EntityPlayer player) {
