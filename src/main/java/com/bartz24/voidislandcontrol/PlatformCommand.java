@@ -305,7 +305,7 @@ public class PlatformCommand extends CommandBase implements ICommand {
         }
 
         isPos.addNewTrsutedPlayer(player2.getGameProfile().getId());
-        player.sendMessage(new TextComponentString("Trusted "+args[1]+" "+player2.getGameProfile().getId()));
+        player.sendMessage(new TextComponentString("Trusted "+args[1]));
 
     }
 
